@@ -5,7 +5,6 @@ import numpy as np
 import sys
 import time
 import RPi.GPIO as GPIO
-from time import sleep
 
 leds = range(2, 14)
 
@@ -22,17 +21,18 @@ MIN = 0
 # open stream
 p = pyaudio.PyAudio()
 
+
 def callback(in_data, frame_count, time_info, status):
-    #GPIO.setmode(GPIO.BCM)
-    data = wf.readframes(frame_count)    
-    '''global MAX
+    GPIO.setmode(GPIO.BCM)
+    # data = wf.readframes(frame_count)
+    global MAX
     global MIN
     global swidth
     global window
-    
+
     thefreq = 0
     leds = range(2, 14)
-    
+
     # unpack the data and times by the hamming window
     unpacked = wave.struct.unpack("%dh"%(len(data)/swidth), data)
     if unpacked and len(unpacked) == len(window):
@@ -52,8 +52,8 @@ def callback(in_data, frame_count, time_info, status):
             thefreq = which*RATE/chunk
             print "The freq is %f Hz." % (thefreq)
         # read some more data
-        #data = wf.readframes(chunk)
-        
+        data = wf.readframes(chunk)
+
         if thefreq > MAX:
             MAX = int(thefreq)
         elif thefreq < MIN:
@@ -66,15 +66,16 @@ def callback(in_data, frame_count, time_info, status):
             if led <= index:
                 GPIO.output(led, GPIO.HIGH)
             else:
-                GPIO.output(led, GPIO.LOW) '''   
+                GPIO.output(led, GPIO.LOW)
 
     return (data, pyaudio.paContinue)
 
-stream = p.open(format =
+
+stream = p.open(format=
                 p.get_format_from_width(wf.getsampwidth()),
-                channels = wf.getnchannels(),
-                rate = RATE,
-                output = True,
+                channels=wf.getnchannels(),
+                rate=RATE,
+                output=True,
                 stream_callback=callback)
 
 stream.start_stream()
